@@ -7,13 +7,14 @@ import javax.persistence.Table;
 import java.util.Date;
 
 @Data
-@Table(name = "product")
-public class ProductPO {
+@Table(name = "shop")
+public class ShopPO {
     @Id
     private Long id;
-    private Long shopId;
     private String name;
-    private Long price;
+    private String phone;
+    private String mobile;
+    private String description;
     private Date createdTime;
     private Date updatedTime;
 }
