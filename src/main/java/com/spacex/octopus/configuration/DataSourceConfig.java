@@ -46,9 +46,9 @@ public class DataSourceConfig {
         DataSourceRule dataSourceRule = new DataSourceRule(dataSourceMap, "springboot_0");
 
         TableRule tableRule = TableRule
-                .builder("user")
-                .generateKeyColumn("user_id")
-                .actualTables(Arrays.asList("user_0", "user_1"))
+                .builder("shop")
+                .generateKeyColumn("shop_id")
+                .actualTables(Arrays.asList("shop_0", "shop_1"))
                 .dataSourceRule(dataSourceRule)
                 .build();
 
@@ -118,6 +118,11 @@ public class DataSourceConfig {
         sessionFactory.setDataSource(mybatisDataSource);
         return sessionFactory.getObject();
     }
+
+//    @Bean
+//    public IdGenerator getIdGenerator() {
+//        return new CommonSelfIdGenerator();
+//    }
 
     public String getUrl() {
         return url;
