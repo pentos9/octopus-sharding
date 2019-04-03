@@ -46,9 +46,9 @@ public class DataSourceConfig {
         DataSourceRule dataSourceRule = new DataSourceRule(dataSourceMap, "springboot_0");
 
         TableRule tableRule = TableRule
-                .builder("user")
-                .generateKeyColumn("user_id")
-                .actualTables(Arrays.asList("user_0", "user_1"))
+                .builder("shop")
+                .generateKeyColumn("shop_id")
+                .actualTables(Arrays.asList("shop_0", "shop_1"))
                 .dataSourceRule(dataSourceRule)
                 .build();
 
@@ -70,33 +70,14 @@ public class DataSourceConfig {
         dataSource.setUsername(username);
         dataSource.setPassword(password);
 
-//        /* 配置初始化大小、最小、最大 */
-//        dataSource.setInitialSize(1);
-//        dataSource.setMinIdle(1);
-//        dataSource.setMaxActive(20);
-//
-//        /* 配置获取连接等待超时的时间 */
-//        dataSource.setMaxWait(60000);
-//
-//        /* 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒 */
-//        dataSource.setTimeBetweenEvictionRunsMillis(60000);
-//
-//        /* 配置一个连接在池中最小生存的时间，单位是毫秒 */
-//        dataSource.setMinEvictableIdleTimeMillis(300000);
-//
-//        dataSource.setValidationQuery("SELECT 'x'");
-//        dataSource.setTestWhileIdle(true);
-//        dataSource.setTestOnBorrow(false);
-//        dataSource.setTestOnReturn(false);
-//
-//        /* 打开PSCache，并且指定每个连接上PSCache的大小。
-//           如果用Oracle，则把poolPreparedStatements配置为true，
-//           mysql可以配置为false。分库分表较多的数据库，建议配置为false */
-//        dataSource.setPoolPreparedStatements(false);
-//        dataSource.setMaxPoolPreparedStatementPerConnectionSize(20);
-//
-//        /* 配置监控统计拦截的filters */
-//        dataSource.setFilters("stat,wall,log4j");
+        dataSource.setAutoCommit(true);
+        dataSource.setConnectionTimeout(30000);
+        dataSource.setIdleTimeout(600000);
+        dataSource.setMaximumPoolSize(50);
+        dataSource.setConnectionInitSql("SELECT 'x'");
+        dataSource.setConnectionTestQuery("SELECT 'x'");
+        dataSource.setMinimumIdle(300000);
+
         return dataSource;
     }
 
@@ -118,6 +99,11 @@ public class DataSourceConfig {
         sessionFactory.setDataSource(mybatisDataSource);
         return sessionFactory.getObject();
     }
+
+//    @Bean
+//    public IdGenerator getIdGenerator() {
+//        return new CommonSelfIdGenerator();
+//    }
 
     public String getUrl() {
         return url;
