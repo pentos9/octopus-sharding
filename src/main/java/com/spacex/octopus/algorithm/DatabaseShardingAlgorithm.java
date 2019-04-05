@@ -10,11 +10,12 @@ import java.util.LinkedHashSet;
 
 public class DatabaseShardingAlgorithm implements SingleKeyDatabaseShardingAlgorithm<Long> {
 
+    private Long databaseCount;
 
     @Override
     public String doEqualSharding(Collection<String> availableTargetNames, ShardingValue<Long> shardingValue) {
         for (String each : availableTargetNames) {
-            if (each.endsWith(shardingValue.getValue() % 2 + "")) {
+            if (each.endsWith(shardingValue.getValue() % databaseCount + "")) {
                 return each;
             }
         }
@@ -26,7 +27,7 @@ public class DatabaseShardingAlgorithm implements SingleKeyDatabaseShardingAlgor
         Collection<String> result = new LinkedHashSet<>(availableTargetNames.size());
         for (Long value : shardingValue.getValues()) {
             for (String tableName : availableTargetNames) {
-                if (tableName.endsWith(value % 2 + "")) {
+                if (tableName.endsWith(value % databaseCount + "")) {
                     result.add(tableName);
                 }
             }
@@ -40,11 +41,24 @@ public class DatabaseShardingAlgorithm implements SingleKeyDatabaseShardingAlgor
         Range<Long> range = shardingValue.getValueRange();
         for (Long i = range.lowerEndpoint(); i <= range.upperEndpoint(); i++) {
             for (String each : availableTargetNames) {
-                if (each.endsWith(i % 2 + "")) {
+                if (each.endsWith(i % databaseCount + "")) {
                     result.add(each);
                 }
             }
         }
+
         return result;
+    }
+
+    public Long getDatabaseCount() {
+        return databaseCount;
+    }
+
+    public void setDatabaseCount(Long databaseCount) {
+        this.databaseCount = databaseCount;
+    }
+
+    public DatabaseShardingAlgorithm(Long databaseCount) {
+        this.databaseCount = databaseCount;
     }
 }

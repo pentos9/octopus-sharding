@@ -6,19 +6,20 @@ import com.dangdang.ddframe.rdb.sharding.api.rule.DataSourceRule;
 import com.dangdang.ddframe.rdb.sharding.api.rule.ShardingRule;
 import com.dangdang.ddframe.rdb.sharding.api.rule.TableRule;
 import com.dangdang.ddframe.rdb.sharding.api.strategy.database.DatabaseShardingStrategy;
-import com.dangdang.ddframe.rdb.sharding.api.strategy.database.NoneDatabaseShardingAlgorithm;
-import com.dangdang.ddframe.rdb.sharding.api.strategy.table.NoneTableShardingAlgorithm;
 import com.dangdang.ddframe.rdb.sharding.api.strategy.table.TableShardingStrategy;
+import com.spacex.octopus.algorithm.DatabaseShardingAlgorithm;
+import com.spacex.octopus.algorithm.TableShardingAlgorithm;
 import com.spacex.octopus.constants.DataSourceConstants;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
-import org.mybatis.spring.annotation.MapperScan;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import tk.mybatis.spring.annotation.MapperScan;
 
 import javax.sql.DataSource;
 import java.sql.SQLException;
@@ -35,29 +36,35 @@ public class DataSourceConfig {
     private String username;
     private String password;
 
+    /**
+     * import tk.mybatis.spring.annotation.MapperScan
+     * 不然扫描不到PO实体类
+     **/
     @Bean(name = "mybatisDataSource")
     public DataSource getDataSource() throws SQLException {
 
         Map<String, DataSource> dataSourceMap = new HashMap<String, DataSource>();
 
-        dataSourceMap.put("springboot_0", mybatisDataSource("springboot"));
-        dataSourceMap.put("springboot_1", mybatisDataSource("springboot2"));
+        dataSourceMap.put("magellan_0", mybatisDataSource("magellan_0"));
+        dataSourceMap.put("magellan_1", mybatisDataSource("magellan_1"));
 
-        DataSourceRule dataSourceRule = new DataSourceRule(dataSourceMap, "springboot_0");
+        DataSourceRule dataSourceRule = new DataSourceRule(dataSourceMap, "magellan_0");
 
         TableRule tableRule = TableRule
                 .builder("shop")
-                .generateKeyColumn("shop_id")
+                //.generateKeyColumn("id")
                 .actualTables(Arrays.asList("shop_0", "shop_1"))
                 .dataSourceRule(dataSourceRule)
                 .build();
 
+        Long tableShardingCount = 2L;
+        Long databaseShardingCount = 2L;
 
         ShardingRule shardingRule = ShardingRule.builder()
                 .dataSourceRule(dataSourceRule)
                 .tableRules(Collections.singletonList(tableRule))
-                .databaseShardingStrategy(new DatabaseShardingStrategy("city_id", new NoneDatabaseShardingAlgorithm()))
-                .tableShardingStrategy(new TableShardingStrategy("user_id", new NoneTableShardingAlgorithm())).build();
+                .databaseShardingStrategy(new DatabaseShardingStrategy("id", new DatabaseShardingAlgorithm(databaseShardingCount)))
+                .tableShardingStrategy(new TableShardingStrategy("id", new TableShardingAlgorithm(tableShardingCount))).build();
 
         DataSource dataSource = ShardingDataSourceFactory.createDataSource(shardingRule);
         return dataSource;
