@@ -8,9 +8,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -37,6 +39,12 @@ public class ShopController {
         }
 
         return null;
+    }
+
+    @RequestMapping(value = "shop/getByIds", method = RequestMethod.GET)
+    public List<ShopDTO> getByIds(@RequestParam List<Long> shopIds) {
+        List<ShopDTO> shopDTOs = shopService.getByIds(shopIds);
+        return shopDTOs;
     }
 
     @RequestMapping(value = "shop/batch", method = RequestMethod.POST)

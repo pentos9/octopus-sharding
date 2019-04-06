@@ -1,6 +1,7 @@
 package com.spacex.octopus.service.impl;
 
 import com.dangdang.ddframe.rdb.sharding.id.generator.IdGenerator;
+import com.google.common.collect.Lists;
 import com.spacex.octopus.dto.shop.ShopCreateDTO;
 import com.spacex.octopus.dto.shop.ShopDTO;
 import com.spacex.octopus.dto.shop.ShopUpdateDTO;
@@ -23,6 +24,25 @@ public class ShopServiceImpl implements ShopService {
 
     @Resource
     private IdGenerator idGenerator;
+
+    @Override
+    public List<ShopDTO> getByIds(List<Long> shopIds) {
+        if (CollectionUtils.isEmpty(shopIds)) {
+            return Lists.newArrayList();
+        }
+
+        Example example = new Example(ShopPO.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andIn("shopId", shopIds);
+        List<ShopPO> shopPOs = shopMapper.selectByExample(example);
+
+        if (shopPOs == null || shopPOs.isEmpty()) {
+            return null;
+        }
+
+        List<ShopDTO> shopDTOs = BeanCopyUtil.mapList(shopPOs, ShopDTO.class);
+        return shopDTOs;
+    }
 
     @Override
     public ShopDTO get(Long shopId) {
