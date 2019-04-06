@@ -1,4 +1,4 @@
-package com.spacex.octopus.dto;
+package com.spacex.octopus.dto.shop;
 
 import lombok.Data;
 
@@ -6,7 +6,7 @@ import java.util.Date;
 
 @Data
 public class ShopDTO {
-    private Long id;
+    private Long shopId;
     private String name;
     private String phone;
     private String mobile;

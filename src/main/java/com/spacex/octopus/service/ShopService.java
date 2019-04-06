@@ -1,7 +1,16 @@
 package com.spacex.octopus.service;
 
-import com.spacex.octopus.repository.po.ShopPO;
+import com.spacex.octopus.dto.shop.ShopCreateDTO;
+import com.spacex.octopus.dto.shop.ShopDTO;
+import com.spacex.octopus.dto.shop.ShopUpdateDTO;
 
 public interface ShopService {
-    ShopPO get(Long shopId);
+    ShopDTO get(Long shopId);
+
+    ShopDTO create(ShopCreateDTO shopCreateDTO);
+
+    ShopDTO update(ShopUpdateDTO shopUpdateDTO);
+
+    boolean delete(Long shopId);
+
 }
