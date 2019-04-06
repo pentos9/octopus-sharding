@@ -55,7 +55,6 @@ public class DataSourceConfig {
         TableRule tableRule = TableRule
                 .builder("shop")
                 .tableIdGenerator(CommonSelfIdGenerator.class)
-                .autoIncrementColumns("id")
                 .actualTables(Arrays.asList("shop_0", "shop_1"))
                 .dataSourceRule(dataSourceRule)
                 .build();
@@ -67,7 +66,7 @@ public class DataSourceConfig {
                 .dataSourceRule(dataSourceRule)
                 .tableRules(Collections.singletonList(tableRule))
                 .databaseShardingStrategy(new DatabaseShardingStrategy("city_id", new DatabaseShardingAlgorithm(databaseShardingCount)))
-                .tableShardingStrategy(new TableShardingStrategy("id", new TableShardingAlgorithm(tableShardingCount))).build();
+                .tableShardingStrategy(new TableShardingStrategy("shop_id", new TableShardingAlgorithm(tableShardingCount))).build();
 
         DataSource dataSource = ShardingDataSourceFactory.createDataSource(shardingRule);
         return dataSource;
