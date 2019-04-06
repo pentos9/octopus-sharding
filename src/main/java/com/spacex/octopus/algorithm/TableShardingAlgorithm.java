@@ -7,11 +7,14 @@ import com.google.common.collect.Range;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 
-public class TableShardingAlgrithm implements SingleKeyTableShardingAlgorithm<Long> {
+public class TableShardingAlgorithm implements SingleKeyTableShardingAlgorithm<Long> {
+
+    private Long tableCount;
+
     @Override
     public String doEqualSharding(Collection<String> tableNames, ShardingValue<Long> shardingValue) {
         for (String each : tableNames) {
-            if (each.endsWith(shardingValue.getValue() % 2 + "")) {
+            if (each.endsWith(shardingValue.getValue() % tableCount + "")) {
                 return each;
             }
         }
@@ -23,7 +26,7 @@ public class TableShardingAlgrithm implements SingleKeyTableShardingAlgorithm<Lo
         Collection<String> result = new LinkedHashSet<>(tableNames.size());
         for (Long value : shardingValue.getValues()) {
             for (String tableName : tableNames) {
-                if (tableName.endsWith(value % 2 + "")) {
+                if (tableName.endsWith(value % tableCount + "")) {
                     result.add(tableName);
                 }
             }
@@ -37,11 +40,23 @@ public class TableShardingAlgrithm implements SingleKeyTableShardingAlgorithm<Lo
         Range<Long> range = shardingValue.getValueRange();
         for (Long i = range.lowerEndpoint(); i <= range.upperEndpoint(); i++) {
             for (String each : tableNames) {
-                if (each.endsWith(i % 2 + "")) {
+                if (each.endsWith(i % tableCount + "")) {
                     result.add(each);
                 }
             }
         }
         return result;
+    }
+
+    public Long getTableCount() {
+        return tableCount;
+    }
+
+    public void setTableCount(Long tableCount) {
+        this.tableCount = tableCount;
+    }
+
+    public TableShardingAlgorithm(Long tableCount) {
+        this.tableCount = tableCount;
     }
 }
