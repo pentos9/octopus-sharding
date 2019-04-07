@@ -10,11 +10,13 @@ import java.util.Date;
 @Table(name = "shop")
 public class ShopPO {
     @Id
-    private Long id;
+    private Long shopId;
     private String name;
     private String phone;
     private String mobile;
+    private Long cityId;
     private String description;
+    private Integer deleted;
     private Date createdTime;
     private Date updatedTime;
 }

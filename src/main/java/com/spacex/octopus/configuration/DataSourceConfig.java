@@ -7,6 +7,8 @@ import com.dangdang.ddframe.rdb.sharding.api.rule.ShardingRule;
 import com.dangdang.ddframe.rdb.sharding.api.rule.TableRule;
 import com.dangdang.ddframe.rdb.sharding.api.strategy.database.DatabaseShardingStrategy;
 import com.dangdang.ddframe.rdb.sharding.api.strategy.table.TableShardingStrategy;
+import com.dangdang.ddframe.rdb.sharding.id.generator.IdGenerator;
+import com.dangdang.ddframe.rdb.sharding.id.generator.self.CommonSelfIdGenerator;
 import com.spacex.octopus.algorithm.DatabaseShardingAlgorithm;
 import com.spacex.octopus.algorithm.TableShardingAlgorithm;
 import com.spacex.octopus.constants.DataSourceConstants;
@@ -52,7 +54,7 @@ public class DataSourceConfig {
 
         TableRule tableRule = TableRule
                 .builder("shop")
-                //.generateKeyColumn("id")
+                .tableIdGenerator(CommonSelfIdGenerator.class)
                 .actualTables(Arrays.asList("shop_0", "shop_1"))
                 .dataSourceRule(dataSourceRule)
                 .build();
@@ -63,8 +65,8 @@ public class DataSourceConfig {
         ShardingRule shardingRule = ShardingRule.builder()
                 .dataSourceRule(dataSourceRule)
                 .tableRules(Collections.singletonList(tableRule))
-                .databaseShardingStrategy(new DatabaseShardingStrategy("id", new DatabaseShardingAlgorithm(databaseShardingCount)))
-                .tableShardingStrategy(new TableShardingStrategy("id", new TableShardingAlgorithm(tableShardingCount))).build();
+                .databaseShardingStrategy(new DatabaseShardingStrategy("city_id", new DatabaseShardingAlgorithm(databaseShardingCount)))
+                .tableShardingStrategy(new TableShardingStrategy("shop_id", new TableShardingAlgorithm(tableShardingCount))).build();
 
         DataSource dataSource = ShardingDataSourceFactory.createDataSource(shardingRule);
         return dataSource;
@@ -107,10 +109,10 @@ public class DataSourceConfig {
         return sessionFactory.getObject();
     }
 
-//    @Bean
-//    public IdGenerator getIdGenerator() {
-//        return new CommonSelfIdGenerator();
-//    }
+    @Bean
+    public IdGenerator getIdGenerator() {
+        return new CommonSelfIdGenerator();
+    }
 
     public String getUrl() {
         return url;
