@@ -101,6 +101,6 @@ public class ShopServiceImpl implements ShopService {
         shopPO.setDeleted(1);
         shopPO.setUpdatedTime(new Date());
         shopMapper.updateByExampleSelective(shopPO, example);
-        return false;
+        return true;
     }
 }
