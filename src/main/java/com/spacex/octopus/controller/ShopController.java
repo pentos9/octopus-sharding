@@ -1,7 +1,10 @@
 package com.spacex.octopus.controller;
 
+import com.spacex.octopus.dto.SimpleBooleanResult;
+import com.spacex.octopus.dto.exception.InvalidParameterException;
 import com.spacex.octopus.dto.shop.ShopCreateDTO;
 import com.spacex.octopus.dto.shop.ShopDTO;
+import com.spacex.octopus.dto.shop.ShopUpdateDTO;
 import com.spacex.octopus.service.ShopService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,6 +48,26 @@ public class ShopController {
     public List<ShopDTO> getByIds(@RequestParam List<Long> shopIds) {
         List<ShopDTO> shopDTOs = shopService.getByIds(shopIds);
         return shopDTOs;
+    }
+
+    @RequestMapping(value = "shop", method = RequestMethod.PUT)
+    public ShopDTO update(@RequestBody ShopUpdateDTO shopUpdateDTO) {
+        if (shopUpdateDTO == null) {
+            throw new InvalidParameterException("shopUpdateDTO can not be null");
+        }
+
+        if (shopUpdateDTO.getShopId() == null) {
+            throw new InvalidParameterException("shopId can not be null");
+        }
+
+        ShopDTO shopDTO = shopService.update(shopUpdateDTO);
+        return shopDTO;
+    }
+
+    @RequestMapping(value = "shop", method = RequestMethod.DELETE)
+    public SimpleBooleanResult delete(Long shopId) {
+        Boolean result = shopService.delete(shopId);
+        return new SimpleBooleanResult(result);
     }
 
     @RequestMapping(value = "shop/batch", method = RequestMethod.POST)
